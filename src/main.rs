@@ -8,18 +8,25 @@ fn main() {
     let incident_cost: f64 = incident_cost.trim().parse().expect("Invalid input");
     let decision_rate = get_user_input("Enter the decision rate (Number of security decisions made each week): ");
     let decision_rate: f64 = decision_rate.trim().parse().expect("Invalid input");
-
+    let current_culture = get_user_input("Enter the current security culture (Between 0.0 and 1.0): ");
+    let current_culture: f64 = current_culture.trim().parse().expect("Invalid input");
+    if !(0.0..=1.0).contains(&current_culture) {
+        panic!("Security culture must be between 0.0 and 1.0");
+    }
     // Calculate sampled yearly decision rate using bell curve
     let sampled_yearly_decision_rate = sample_yearly_decision_rate(decision_rate);
 
-    let iterations = 100_000;
-    let (weak_cost, moderate_cost, strong_cost) = monte_carlo_simulation(
+    let iterations = 900_000;
+    let (weak_cost, moderate_cost, strong_cost, current_cost) = monte_carlo_simulation(
         incident_cost,
         sampled_yearly_decision_rate,
         iterations,
+        current_culture,
     );
-    println!("\nYearly Cyber Incident Cost Estimates:");
-    println!("Weak Culture:    £{:.2}", weak_cost);
+    println!("\nYearly Cyber Incident Cost Estimates");
+    println!("-------------------------------------");
+    println!("Weak Culture:     £{:.2}", weak_cost);
     println!("Moderate Culture: £{:.2}", moderate_cost);
     println!("Strong Culture:   £{:.2}", strong_cost);
+    println!("\nCurrent Culture:  £{:.2}", current_cost);
 }
